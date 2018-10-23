@@ -43,6 +43,7 @@ requirements:
     - r-base
     - r-coda >=0.13
     - {{native}}jags 4.*
+    - libopenblas
   run:
     - r-base
     - {{native}}gcc-libs         # [win]
