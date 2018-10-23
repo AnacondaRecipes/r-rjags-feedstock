@@ -17,8 +17,7 @@ source:
 
 build:
   merge_build_host: True  # [win]
-  number: 2
-  skip: true  # [win]
+  number: 3
   rpaths:
     - lib/R/lib/
     - lib/
@@ -32,6 +31,7 @@ requirements:
     - {{posix}}filesystem        # [win]
     - {{posix}}sed               # [win]
     - {{posix}}grep              # [win]
+    - {{posix}}patch             # [win]
     - {{posix}}autoconf
     - {{posix}}automake          # [not win]
     - {{posix}}automake-wrapper  # [win]
@@ -42,12 +42,12 @@ requirements:
   host:
     - r-base
     - r-coda >=0.13
-    - jags 4.*
+    - {{native}}jags 4.*
   run:
     - r-base
     - {{native}}gcc-libs         # [win]
     - r-coda >=0.13
-    - jags 4.*
+    - {{native}}jags 4.*
 
 test:
   commands:
