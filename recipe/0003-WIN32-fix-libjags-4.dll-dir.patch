@@ -1,0 +1,98 @@
+--- work/R/windows/zzz.R.orig	2015-10-20 11:17:30.000000000 -0500
++++ work/R/windows/zzz.R	2018-10-23 16:53:48.362575300 -0500
+@@ -14,7 +14,7 @@
+     }
+     if (!file_test("-d", jags.home)) return(FALSE)
+ 
+-    bindir <- file.path(jags.home, .Platform$r_arch, "bin")
++    bindir <- file.path(jags.home, "bin")
+     jags.dll <- file.path(bindir, paste("libjags-", major,
+                                         .Platform$dynlib.ext, sep=""))
+     return(file.exists(jags.dll))
+@@ -65,44 +65,51 @@
+     ## of the rjags package
+     jags.major <- packageVersion(pkg, lib)$major
+ 
+-    ## Try environment variable first
+-    jags.home <- Sys.getenv("JAGS_HOME")
+-    if (nchar(jags.home) > 0) {
+-        if (!.check.jags.home(jags.home, jags.major)) {
+-            stop("The environment variable JAGS_HOME is set to\n", jags.home,
+-                 "\nbut no JAGS installation can be found there\n")
++    ## Try relative path first. For Anaconda Distro/conda-forge this
++    ## allows the package to work without needing an activation script.
++    jags.home <- file.path(dirname(dirname(Sys.getenv(c("R_HOME")))),
++                           "Library", "mingw-w64")
++    if (!file.exists(jags.home)) {
++
++        ## Try environment variable next
++        jags.home <- Sys.getenv("JAGS_HOME")
++        if (nchar(jags.home) > 0) {
++            if (!.check.jags.home(jags.home, jags.major)) {
++                stop("The environment variable JAGS_HOME is set to\n", jags.home,
++                    "\nbut no JAGS installation can be found there\n")
++            }
+         }
+-    }
+-    else {
+-        ## Search the registry. We need to look for both machine-wide and
+-        ## user-specific installations
++        else {
++            ## Search the registry. We need to look for both machine-wide and
++            ## user-specific installations
+ 
+-        key1 <- .findJAGS("HLM", jags.major)
+-        key2 <- .findJAGS("HCU", jags.major)
++            key1 <- .findJAGS("HLM", jags.major)
++            key2 <- .findJAGS("HCU", jags.major)
+ 
+-        if (is.null(key1)) {
+-            if (is.null(key2)) {
+-                stop(.noJAGS(jags.major))
++            if (is.null(key1)) {
++                if (is.null(key2)) {
++                    stop(.noJAGS(jags.major))
++                }
++                else {
++                    latest <- key2
++                }
++            }
++            else if (is.null(key2) || names(key2) < names(key1)) {
++                latest <- key1
+             }
+             else {
+                 latest <- key2
+             }
+-        }
+-        else if (is.null(key2) || names(key2) < names(key1)) {
+-            latest <- key1
+-        }
+-        else {
+-            latest <- key2
+-        }
+ 
+-        jags.home <- latest[[1]][["InstallDir"]]
++            jags.home <- latest[[1]][["InstallDir"]]
++        }
+     }
+     
+ ### Add the JAGS bin to the windows PATH, if not already present
+ 
+     path <- Sys.getenv("PATH")
+     split.path <- strsplit(path, .Platform$path.sep)$PATH
+-    bindir <- file.path(jags.home, .Platform$r_arch, "bin")
++    bindir <- file.path(jags.home, "bin")
+     if (!any(split.path == bindir)) {
+         path <- paste(bindir, path, sep=.Platform$path.sep)
+         if (!Sys.setenv("PATH"=path)) {
+@@ -117,8 +124,8 @@
+ ### Set the module directory, if the option jags.moddir is not already set
+     
+     if (is.null(getOption("jags.moddir"))) {
+-        options("jags.moddir" = file.path(jags.home, .Platform$r_arch,
+-                "modules"))
++        options("jags.moddir" = file.path(jags.home, "lib", "JAGS",
++                paste0("modules-", jags.major)))
+     }
+ 
+ ### Check that the module directory actually exists

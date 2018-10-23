@@ -13,7 +13,9 @@ source:
     - {{ cran_mirror }}/src/contrib/Archive/rjags/rjags_{{ version }}.tar.gz
   sha256: cf24bb1e7c8445bafb49097089ad33e5bd5d8efbccf16fc7e32ad230f05f89ad
   patches:
-    - fix-module-path.diff
+    - 0001-fix-module-path.diff
+    - 0002-WIN32-fix-include-dir.patch
+    - 0003-WIN32-fix-libjags-4.dll-dir.patch
 
 build:
   merge_build_host: True  # [win]
@@ -43,7 +45,8 @@ requirements:
     - r-base
     - r-coda >=0.13
     - {{native}}jags 4.*
-    - libopenblas
+    - {{native}}libopenblas      # [not win]
+    - {{native}}openblas         # [win]
   run:
     - r-base
     - {{native}}gcc-libs         # [win]
@@ -60,8 +63,6 @@ about:
   license: GPL (== 2)
   summary: Interface to the JAGS MCMC library.
   license_family: GPL2
-  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'  # [unix]
-  license_file: '{{ environ["PREFIX"] }}\R\share\licenses\GPL-2'  # [win]
 
 extra:
   recipe-maintainers:

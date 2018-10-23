@@ -1,0 +1,7 @@
+--- work/src/Makevars.win.orig	1969-12-31 18:00:00.000000000 -0600
++++ work/src/Makevars.win	2018-10-23 14:39:36.271492700 -0500
+@@ -1,2 +1,2 @@
+-PKG_CPPFLAGS=-I"$(JAGS_ROOT)/include" 
+-PKG_LIBS=-L"$(JAGS_ROOT)/${R_ARCH}/bin" -ljags-4
++PKG_CPPFLAGS=-I"$(JAGS_ROOT)/include/JAGS" 
++PKG_LIBS=-L"$(JAGS_ROOT)/${R_ARCH}/bin" -ljags
