@@ -18,6 +18,7 @@ source:
     - 0003-WIN32-fix-libjags-4.dll-dir.patch
 
 build:
+  skip: true  # [win]
   merge_build_host: True  # [win]
   number: 3
   rpaths:
