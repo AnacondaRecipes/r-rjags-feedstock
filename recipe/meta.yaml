@@ -1,4 +1,5 @@
-{% set version = '4-6' %}
+{% set version = '4-8' %}
+
 {% set posix = 'm2-' if win else '' %}
 {% set native = 'm2w64-' if win else '' %}
 
@@ -11,7 +12,8 @@ source:
   url:
     - {{ cran_mirror }}/src/contrib/rjags_{{ version }}.tar.gz
     - {{ cran_mirror }}/src/contrib/Archive/rjags/rjags_{{ version }}.tar.gz
-  sha256: cf24bb1e7c8445bafb49097089ad33e5bd5d8efbccf16fc7e32ad230f05f89ad
+  sha256: 1529827ab11493fb5f05552e239d700ae2f818995d86d3c9e4c92523f594b59f
+
   patches:
     - 0001-fix-module-path.diff
     - 0002-WIN32-fix-include-dir.patch
@@ -20,12 +22,16 @@ source:
 build:
   skip: true  # [win]
   merge_build_host: True  # [win]
-  number: 3
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+
+  # This is required to make R link correctly on Linux.
   rpaths:
     - lib/R/lib/
     - lib/
     - lib/JAGS/modules-4/
 
+# Suggests: tcltk
 requirements:
   build:
     - {{ compiler('c') }}        # [not win]
@@ -42,12 +48,14 @@ requirements:
     - {{posix}}make
     - {{posix}}coreutils         # [win]
     - {{posix}}zip               # [win]
+
   host:
     - r-base
     - r-coda >=0.13
     - {{native}}jags 4.*
     - {{native}}libopenblas      # [not win]
     - {{native}}openblas         # [win]
+
   run:
     - r-base
     - {{native}}gcc-libs         # [win]
@@ -56,8 +64,15 @@ requirements:
 
 test:
   commands:
+    # You can put additional test commands to be run here.
     - $R -e "library('rjags')"           # [not win]
     - "\"%R%\" -e \"library('rjags')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
 
 about:
   home: http://mcmc-jags.sourceforge.net
@@ -74,3 +89,28 @@ extra:
     - jdblischak
     - cbrueffer
     - dbast
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: rjags
+# Version: 4-8
+# Date: 2018-10-19
+# Title: Bayesian Graphical Models using MCMC
+# Authors@R: c(person("Martyn", "Plummer", role=c("aut","cre"), email="martyn.plummer@gmail.com"), person("Alexey", "Stukalov", role="ctb"), person("Matt", "Denwood", role="ctb"))
+# Depends: R (>= 2.14.0), coda (>= 0.13)
+# SystemRequirements: JAGS 4.x.y
+# URL: http://mcmc-jags.sourceforge.net
+# Suggests: tcltk
+# Description: Interface to the JAGS MCMC library.
+# License: GPL (== 2)
+# NeedsCompilation: yes
+# Packaged: 2018-10-19 17:03:26 UTC; martyn
+# Author: Martyn Plummer [aut, cre], Alexey Stukalov [ctb], Matt Denwood [ctb]
+# Maintainer: Martyn Plummer <martyn.plummer@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2018-10-19 18:00:02 UTC
+
+# See
+# http://docs.continuum.io/conda/build.html for
+# more information about meta.yaml
