@@ -53,7 +53,7 @@ requirements:
     - r-base
     - r-coda >=0.13
     - r-lattice
-    - {{native}}jags 4.*
+    - {{native}}jags >=4.0.0
     - {{native}}libopenblas      # [not win]
     - {{native}}openblas         # [win]
 
@@ -62,7 +62,7 @@ requirements:
     - r-lattice
     - {{native}}gcc-libs         # [win]
     - r-coda >=0.13
-    - {{native}}jags 4.*
+    - {{native}}jags >=4.0.0
     - {{native}}libopenblas      # [not win]
     - {{native}}openblas         # [win]
 
