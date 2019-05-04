@@ -63,6 +63,8 @@ requirements:
     - {{native}}gcc-libs         # [win]
     - r-coda >=0.13
     - {{native}}jags 4.*
+    - {{native}}libopenblas      # [not win]
+    - {{native}}openblas         # [win]
 
 test:
   commands:
