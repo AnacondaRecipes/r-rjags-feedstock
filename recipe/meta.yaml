@@ -20,10 +20,10 @@ source:
     - 0003-WIN32-fix-libjags-4.dll-dir.patch
 
 build:
-  skip: true  # [win]
   merge_build_host: True  # [win]
   # If this is a new build for the same version, increment the build number.
   number: 0
+  skip: true  # [win]
 
   # This is required to make R link correctly on Linux.
   rpaths:
@@ -52,12 +52,14 @@ requirements:
   host:
     - r-base
     - r-coda >=0.13
+    - r-lattice
     - {{native}}jags 4.*
     - {{native}}libopenblas      # [not win]
     - {{native}}openblas         # [win]
 
   run:
     - r-base
+    - r-lattice
     - {{native}}gcc-libs         # [win]
     - r-coda >=0.13
     - {{native}}jags 4.*
